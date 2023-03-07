@@ -14,19 +14,19 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request)
     {
         if ($request->ajax()) {
 
             $data = Products::latest()->get();
 
-            return Datatables::of($data)
+            $data = Datatables::of($data)
                 ->addIndexColumn()
 
                 //**************IMAGE COLUMN**********//
                 ->addColumn('image', function ($row) {
 
-                    $image= $row->image;
+                    $image = '<img src="'.$row->image.'" alt="" class="rounded-circle" alt="Avatar">';
                     return $image;
                 })
                 //**********END IMAGE COLUMN*********//
@@ -52,12 +52,12 @@ class ProductsController extends Controller
                 ->addColumn('action', function ($row) {
                     $action = '<div class="btn-group">
                     <a href="view_product/' . $row->id . '" type="button" class="btn btn-sm btn-info text-light">View</a>';
-                    // if(Auth::user()){
-                    //  $action = $action.'
-                    //  <a href="add_product" type="button" class="btn btn-sm btn-warning text-success">Add</a>
-                    //  <a href="edit_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light">Edit</a>
-                    //  <a href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light">Delete</a>';
-                    // }
+                    if(Auth::user()){
+                     $action = $action.'
+                     <a href="add_product" type="button" class="btn btn-sm btn-warning text-success">Add</a>
+                     <a href="edit_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light">Edit</a>
+                     <a href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light">Delete</a>';
+                    }
                     $action = $action.'</div>';
                     return $action;
                 })

@@ -15,10 +15,10 @@ use App\Http\Controllers\ProductsController;
 
 Route::view('/', 'welcome');
 
+Route::get('get_products',[ProductsController::class,'index'])->name('get_products');
 
 Route::group(['middleware' => ['auth']], function () {
     //*****PRODUCT ROUTES**********//
-    Route::get('get_products',[ProductsController::class,'index'])->name('get_products');
     Route::get('view_product/{id}',[ProductsController::class,'show'])->name('view_product');
     Route::get('add_product',[ProductsController::class,'create'])->name('add_product');
     Route::get('edit_product/{id}',[ProductsController::class,'edit'])->name('edit_product');
