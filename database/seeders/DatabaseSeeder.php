@@ -14,14 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-    	foreach (range(1,50) as $index) {
-            DB::table('products')->insert([
-                'image' => 'N/A',
-                'name' => $faker->name,
-                'price' => rand(10,100),
-                'created_at'=>Carbon::now(),
-            ]);
-        }
+        $this->call(ProductSeeder::class);
+        $this->call(UserSeeder::class);
     }
 }

@@ -14,19 +14,26 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
+    {
+        return view('welcome');
+    }
+    public function getproducts(Request $request)
     {
         if ($request->ajax()) {
 
             $data = Products::latest()->get();
 
-            $data = Datatables::of($data)
+            return  $data = Datatables::of($data)
                 ->addIndexColumn()
 
                 //**************IMAGE COLUMN**********//
                 ->addColumn('image', function ($row) {
-
-                    $image = '<img src="'.$row->image.'" alt="" class="rounded-circle" alt="Avatar">';
+                    if($row->image == "" || $row->image == "N/A"){ 
+                        $image = '<img src="images/palceholder.png" alt="" style="width:30px;height:30px;" class="rounded-circle" alt="Avatar">';
+                    }else{
+                        $image = '<img src="'.$row->image.'" alt="" class="rounded-circle" style="width:30px;height:30px;" alt="Avatar">';
+                    }
                     return $image;
                 })
                 //**********END IMAGE COLUMN*********//
@@ -51,12 +58,11 @@ class ProductsController extends Controller
                 //**************ACTION COLUMN**********//
                 ->addColumn('action', function ($row) {
                     $action = '<div class="btn-group">
-                    <a href="view_product/' . $row->id . '" type="button" class="btn btn-sm btn-info text-light">View</a>';
+                    <a  type="button" id="show" class="btn btn-sm btn-info text-light" data-id="' . $row->id . '" >View</a>';
                     if(Auth::user()){
                      $action = $action.'
-                     <a href="add_product" type="button" class="btn btn-sm btn-warning text-success">Add</a>
                      <a href="edit_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light">Edit</a>
-                     <a href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light">Delete</a>';
+                     <a href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light" onclick="return confirm("Are you sure you want to delete this record?");">Delete</a>';
                     }
                     $action = $action.'</div>';
                     return $action;
@@ -72,9 +78,14 @@ class ProductsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function show(Request $request,$id)
     {
-        //
+        if($request->ajax()){
+            $product = Products::find($id);
+            return response([
+                'product' => $product
+            ]);
+        }
     }
 
     /**
@@ -85,21 +96,6 @@ class ProductsController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Products $products): Response
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Products $products): Response
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -112,8 +108,9 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Products $products): RedirectResponse
+    public function destroy($id)
     {
-        //
+        Products::find($id)->delete();
+        return redirect()->back()->with('success', 'Product deleted successfully');
     }
 }

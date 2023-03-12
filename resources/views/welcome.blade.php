@@ -1,25 +1,38 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Products</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
-  </head>
-  <body>
-    <h1 class="text-center text-primary mt-5 mb-3">Staxo Products</h1>
-
+@extends('layout.main')
+@section('tile')
+    Product List
+@endsection
+@section('content')
     <div class="container-fluid">
+      @if(Auth::user())
+       <a href="{{ route('add_product') }}" type="button" class="btn btn-sm btn-success text-light mt-3 mb-2" style="margin-left: 90%;" data-toggle="modal" data-target="#add_product">Add New Product</a>
+      @endif
+      @if ($errors->any())
+          <div class="alert alert-danger alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
+         @if ($message = Session::get('success'))
+          <div class="alert alert-success alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <p>{{ $message }}</p>
+                  </div>
+           @endif
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-striped table-sm border data-table">
-                    <thead class="bg bg-primary text-light">
+                    <thead class="text-light" style="background-color: #bdbb46">
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Action</th>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tfoot>
@@ -29,11 +42,101 @@
             </div>
         </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+    {{-- VIEW PRODUCT MODAL --}}
+    <div class="modal fade" id="view_product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Product Detais</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+               <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      <label for="image">Image</label>
+                      <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="" id="image"></iframe>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name" placeholder="Name">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label for="price">Price</label>
+                      <input type="text" class="form-control"  id="price" placeholder="Price">
+                    </div>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{-- END OF VIEW PRODUCT MODAL --}}
+        {{-- ADD PRODUCT MODAL --}}
+        <div class="modal fade" id="add_product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="{{ route('add_product') }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" name="image" id="image" class="form-control" accept=".jpg,.png,.jpeg,.jfif">
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Name">
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="text" class="form-control"  id="price" placeholder="Price">
+                          </div>
+                        </div>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Add</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{-- END OF ADD PRODUCT MODAL --}}
+@endsection
+@section('scripts')
+<script>
+    $('#show').on('click', function(){
+        // const id = $(this).attr('data-id');
+
+        $('#view_product').show()
+               
+    });
+</script>
 <script>
     $(document).ready(function() {
 
@@ -50,7 +153,7 @@
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
-                    orderable: false,
+                    orderable: true,
                     searchable: false, 
                 },
                 {
@@ -83,5 +186,4 @@
 
     });//END DOCUMENT READY FUNCTION
 </script>
-  </body>
-</html>
+@endsection
