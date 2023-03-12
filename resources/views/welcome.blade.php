@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
       @if(Auth::user())
-       <a href="{{ route('add_product') }}" type="button" class="btn btn-sm btn-success text-light mt-3 mb-2" style="margin-left: 90%;" data-toggle="modal" data-target="#add_product">Add New Product</a>
+       <a href="{{ route('add_product') }}" type="button" class="btn btn-sm btn-success text-light mt-3 mb-1" style="margin-left: 90%;" data-toggle="modal" data-target="#add_product">Add New Product</a>
       @endif
       @if ($errors->any())
           <div class="alert alert-danger alert-dismissible">
@@ -23,10 +23,10 @@
                   <p>{{ $message }}</p>
                   </div>
            @endif
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-lg-12">
                 <table class="table table-striped table-sm border data-table">
-                    <thead class="text-light" style="background-color: #bdbb46">
+                    <thead class="text-light" style="background-color: #8935c9">
                       <tr>
                         <th>#</th>
                         <th>Image</th>
@@ -101,28 +101,28 @@
                         <div class="col-lg-12">
                           <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" name="image" id="image" class="form-control" accept=".jpg,.png,.jpeg,.jfif">
+                            <input type="file" name="image" id="image" class="form-control" accept=".jpg,.png,.jpeg,.jfif" required>
                           </div>
                         </div>
                         <div class="col-lg-6">
                           <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Name">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Name" required>
                           </div>
                         </div>
                         <div class="col-lg-6">
                           <div class="form-group">
                             <label for="price">Price</label>
-                            <input type="text" class="form-control"  id="price" placeholder="Price">
+                            <input type="text" class="form-control" name="price"  id="price" placeholder="Price" required>
                           </div>
                         </div>
                     </div>
-                </form>
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Add</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
+            </form>
             </div>
           </div>
         </div>
@@ -130,11 +130,25 @@
 @endsection
 @section('scripts')
 <script>
-    $('#show').on('click', function(){
-        // const id = $(this).attr('data-id');
+    $('.btn-info').on('click', function(){
 
-        $('#view_product').show()
-               
+        const id = $(this).attr('data-id');
+        const _url = "{{ route('view_product',['id' => ':id' ]) }}";
+        _url = _url.replace(':id', id);
+
+        $.ajax({
+            url: _url,
+            method: 'GET',
+            success: function(response) {
+                $('#image').attr('src', response.image);
+                $('#name').val(response.name);
+                $('#price').val(response.price);
+                $('#view_product').modal('show');
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        }); 
     });
 </script>
 <script>

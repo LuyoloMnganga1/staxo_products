@@ -58,7 +58,7 @@ class ProductsController extends Controller
                 //**************ACTION COLUMN**********//
                 ->addColumn('action', function ($row) {
                     $action = '<div class="btn-group">
-                    <a  type="button" id="show" class="btn btn-sm btn-info text-light" data-id="' . $row->id . '" >View</a>';
+                    <a  type="button" class="btn btn-sm btn-info text-light" data-id="' . $row->id . '">View</a>';
                     if(Auth::user()){
                      $action = $action.'
                      <a href="edit_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light">Edit</a>
@@ -67,7 +67,7 @@ class ProductsController extends Controller
                     $action = $action.'</div>';
                     return $action;
                 })
-                //**********END ACTION COLUMN*********//
+                //**********END ACTION COLUMN*********// 
 
                 ->rawColumns(['image', 'name', 'price', 'action'])
                 ->make(true);
@@ -91,9 +91,27 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request)
     {
-        //
+        $product = $request->validate([
+            'image' => ['required',],
+            'name' => ['required','string'],
+            'price' => ['required'],
+        ]);
+
+        $path='';
+        if($request->hasFile('image')){
+            $img = auth()->id() . '_' . time() . '.'. $request->image->extension();
+            $request->image->move('storage/app/images', $img);
+            $path = 'storage/app/images/'.$img;
+        }
+        Products::create([
+            'image' => $path,
+            'name' => $product['name'],
+            'price' => $product['price'],
+        ]);
+
+        return redirect()->back()->with('success','Product created successfully');
     }
 
 
