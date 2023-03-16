@@ -1,19 +1,15 @@
 @extends('layout.main')
 @section('tile')
-    Login
+    Forgot Password
 @endsection
 @section('content')
-<style>
-    body{
-        background: honeydew,
-    }
-</style>
 <div class="containr-fluid">
     <div class="card border-3 shadow-lg" style="margin:10% 30% 0% 30%">
         <div class="card header" style="background-color: #8935c9;color:#fff">
-            <h1 class="text-center">Login</h1>
+            <h1 class="text-center">Forgot Password</h1>
+            <small class="text-center">Recieve password reset link via emial</small>
         </div>
-        <form action="{{ route('authenticate') }}" method="post">
+        <form action="{{ route('forgot_password_link') }}" method="post">
             @csrf
         <div class="card-body" style="color: #8935c9">
             @if ($errors->any())
@@ -34,22 +30,15 @@
                      @endif
             <div class="col-lg-12">
                 <div class="form-group">
-                  <label for="name">E-mail</label>
+                  <label for="name">Email</label>
                   <input type="email" class="form-control" name="email" id="email" placeholder="john@example.com">
                 </div>
               </div>
               <div class="col-lg-12">
                 <div class="form-group">
-                  <label for="name">Password</label>
-                  <input type="password" class="form-control" name="password" id="password" placeholder="**********">
+                  <input type="submit" class="form-control"  value="Send Password Reset Link" class="btn-sm btn" style="background-color: #8935c9;color:#fff">
                 </div>
               </div>
-              <div class="col-lg-12">
-                <div class="form-group">
-                  <input type="submit" class="form-control"  value="Login" class="btn-sm btn" style="background-color: #8935c9;color:#fff">
-                </div>
-              </div>
-              <a href="{{ route('forgot_password') }}">forgot password?</a>
             </form>
         </div>
     </div>

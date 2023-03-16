@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotpasswordController;
+use App\Http\Controllers\Auth\ResetpasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +22,11 @@ Route::get('/', [ProductsController::class,'index']);
 //*****AUTHENTICATION ROUTES**********//
 Route::get('login', [LoginController::class,'index'])->name('login'); 
 Route::post('authenticate', [LoginController::class,'authenticate'])->name('authenticate'); 
-Route::get('new/user', [RegisterController::class,'indeex'])->name('register');
+// Route::get('new/user', [RegisterController::class,'indeex'])->name('register');
+Route::get('/forgot-password',[ForgotpasswordController::class,'index'])->name('forgot_password');
+Route::post('/forgot-password-link',[ForgotpasswordController::class,'forgotpassword'])->name('forgot_password_link');
+Route::get('/reset-password/{id}/{token}', [ResetpasswordController::class,'verifylink'])->name('reset_assword');
+Route::post('/update-password',  [ResetpasswordController::class,'updatepassword'])->name('update_password'); 
 Route::get('logout', [LoginController::class,'logout'])->name('logout'); 
 //***** ND OF AUTHENTICATION ROUTES**********//
 
