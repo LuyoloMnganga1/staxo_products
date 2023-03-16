@@ -58,11 +58,11 @@ class ProductsController extends Controller
                 //**************ACTION COLUMN**********//
                 ->addColumn('action', function ($row) {
                     $action = '<div class="btn-group">
-                    <a  type="button" class="btn btn-sm btn-info text-light" data-id="' . $row->id . '">View</a>';
+                    <a  type="button" class="btn btn-sm btn-info text-light" data-href="view_product/' . $row->id . '" id="view_btn" >View</a>';
                     if(Auth::user()){
                      $action = $action.'
-                     <a href="edit_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light">Edit</a>
-                     <a href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light" onclick="return confirm("Are you sure you want to delete this record?");">Delete</a>';
+                     <a data-href="view_product/' . $row->id . '" type="button" class="btn btn-sm btn-warning text-light" id="edit_btn">Edit</a>
+                     <a data-href="delete_product/' . $row->id . '" type="button" id="delete_btn" class="btn btn-sm btn-danger text-light" id="delete_btn">Delete</a>';
                     }
                     $action = $action.'</div>';
                     return $action;
@@ -80,12 +80,8 @@ class ProductsController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->ajax()){
             $product = Products::find($id);
-            return response([
-                'product' => $product
-            ]);
-        }
+            return response()->json($product);
     }
 
     /**
@@ -112,6 +108,29 @@ class ProductsController extends Controller
         ]);
 
         return redirect()->back()->with('success','Product created successfully');
+    }
+    public function edit(Request $request)
+    {
+        $id = $request->product_id;
+        $product = $request->validate([
+            'image' => ['required',],
+            'name' => ['required','string'],
+            'price' => ['required'],
+        ]);
+
+        $path='';
+        if($request->hasFile('image')){
+            $img = auth()->id() . '_' . time() . '.'. $request->image->extension();
+            $request->image->move('storage/app/images', $img);
+            $path = 'storage/app/images/'.$img;
+        }
+        Products::where('id',$id)->update([
+            'image' => $path,
+            'name' => $product['name'],
+            'price' => $product['price'],
+        ]);
+
+        return redirect()->back()->with('success','Product updated successfully');
     }
 
 

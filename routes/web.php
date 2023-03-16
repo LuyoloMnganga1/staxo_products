@@ -31,7 +31,7 @@ Route::get('view_product/{id}',[ProductsController::class,'show'])->name('view_p
 Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', [ProductsController::class,'index'])->name('dashboard');
     Route::post('add_product',[ProductsController::class,'create'])->name('add_product');
-    Route::get('edit_product/{id}',[ProductsController::class,'edit'])->name('edit_product');
+    Route::post('edit_product',[ProductsController::class,'edit'])->name('edit_product');
     Route::get('delete_product/{id}',[ProductsController::class,'destroy'])->name('delete_product'); 
 });
  //*****END OF PRODUCT ROUTES**********//
