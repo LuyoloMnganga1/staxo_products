@@ -38,16 +38,16 @@
                                     padding: 10px 20px;
                                     font-size: 16px;
                                     font-weight: 600;
-                                    background-color: #ed6ae9 !important;">Reset Password</a>
+                                    background-color: #8935c9 !important;">Reset Password</a>
                                 </p>
-                                <p style="margin:20px 0 12px 0;font-size:14px;font-family:Arial,sans-serif;color:red">
+                                <p style="text-align: center;margin:20px 0 12px 0;font-size:14px;font-family:Arial,sans-serif;color:red">
                                     NB: This link expires in 5 minutes.
                                 </p>
                                 <p style="margin:20px 0 12px 0;font-size:14px;font-family:Arial,sans-serif;">
                                     Thank
                                     you, </p>
                                 <p style="margin:0 0 12px 0;font-size:14px;font-family:Arial,sans-serif;">
-                                    CCS </p>
+                                    Staxo Product </p>
                             </td>
                         </tr>
 
